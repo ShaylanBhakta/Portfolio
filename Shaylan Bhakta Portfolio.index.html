@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shaylan Bhakta | Engineering Portfolio</title>
+    <style>
+        /* CSS Variables */
+        :root {
+            --bg-color: #0d0d0d;
+            --card-bg: #1a1a1a;
+            --text-main: #f2f2f2;
+            --text-muted: #a0a0a0;
+            --accent-color: #e53935; /* Racing Red */
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --linkedin-blue: #0077b5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- Interactive Canvas Background --- */
+        #interactive-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-item {
+            opacity: 0;
+            animation: fadeUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation-play-state: paused;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.3s; }
+        .delay-3 { animation-delay: 0.5s; }
+        .delay-4 { animation-delay: 0.7s; }
+
+        /* --- Page Views & Smooth Transitions --- */
+        .page-view {
+            transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        .page-view.hidden-view {
+            display: none;
+            opacity: 0;
+            transform: scale(0.97) translateY(25px);
+            pointer-events: none;
+        }
+
+        @keyframes fadeInView {
+            0% {
+                opacity: 0;
+                transform: scale(0.97) translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .animate-view-in {
+            animation: fadeInView 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            background: rgba(13, 13, 13, 0);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid transparent;
+            transition: background 0.4s ease, backdrop-filter 0.4s ease, border-bottom 0.4s ease, padding 0.4s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(13, 13, 13, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        nav .logo {
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: 1.5px;
+            color: var(--text-main);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        nav .logo:hover {
+            color: var(--accent-color);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        nav a.nav-link {
+            position: relative;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+            padding-bottom: 4px;
+        }
+
+        nav a.nav-link:hover {
+            color: var(--text-main);
+        }
+
+        nav a.nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease-in-out;
+        }
+
+        nav a.nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-icon {
+            display: inline-flex;
+            align-items: center;
+            color: var(--linkedin-blue);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .nav-icon:hover {
+            transform: scale(1.2);
+        }
+
+        /* --- Hero / About Section --- */
+        header {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 5% 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about-hero-container {
+            display: flex;
+            gap: 4rem;
+            align-items: center;
+            width: 100%;
+        }
+
+        .about-hero-content {
+            flex: 1;
+        }
+
+        h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        h1 span {
+            color: var(--accent-color);
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        h1:hover span {
+            transform: translateX(10px);
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            max-width: 700px;
+        }
+
+        /* Profile Image */
+        .profile-img-wrapper {
+            flex: 0 0 320px;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            overflow: hidden;
+            background: #1a1a1a;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .profile-img-wrapper:hover {
+            box-shadow: 0 15px 35px rgba(229, 57, 53, 0.25);
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: grayscale(20%);
+            transition: filter 0.3s ease;
+        }
+
+        .profile-img-wrapper:hover .profile-img {
+            filter: grayscale(0%);
+        }
+
+        .linkedin-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background-color: var(--linkedin-blue);
+            color: #ffffff;
+            padding: 0.8rem 1.8rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .linkedin-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background-color: #005582;
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+
+        .linkedin-btn:hover::before {
+            width: 100%;
+        }
+
+        .linkedin-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 119, 181, 0.4);
+        }
+
+        /* --- Section Titles --- */
+        section {
+            padding: 4rem 5% 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            border-bottom: 2px solid transparent;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--accent-color);
+            transition: width 0.4s ease;
+        }
+
+        .section-title:hover::after {
+            width: 100%;
+        }
+
+        /* --- Expanded & Centered Gallery Section --- */
+        #gallery {
+            max-width: 1400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        #gallery .section-title::after {
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+        }
+
+        #gallery .section-title:hover::after {
+            width: 100%;
+        }
+
+        .gallery-carousel-container {
+            position: relative;
+            width: 100%;
+            max-width: 1350px;
+            margin: 0 auto;
+        }
+
+        .gallery-track-wrapper {
+            width: 100%;
+            overflow: hidden;
+            border-radius: 16px;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .gallery-track {
+            display: flex;
+            gap: 1.5rem;
+            will-change: transform;
+        }
+
+        .gallery-card {
+            flex: 0 0 50%;
+            max-width: 720px;
+            height: 480px;
+            position: relative;
+            background-color: var(--card-bg);
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            opacity: 0.35;
+            transform: scale(0.92);
+            transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease;
+        }
+
+        .gallery-card.active {
+            opacity: 1;
+            transform: scale(1);
+            border-color: rgba(229, 57, 53, 0.4);
+        }
+
+        .gallery-card:hover {
+            border-color: var(--accent-color);
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .gallery-card.active:hover .gallery-img {
+            transform: scale(1.03);
+        }
+
+        /* Navigation Arrows */
+        .gallery-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(13, 13, 13, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            z-index: 30;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+            transition: all 0.3s ease;
+        }
+
+        .gallery-nav-btn:hover {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: translateY(-50%) scale(1.12);
+        }
+
+        .gallery-prev { left: 10px; }
+        .gallery-next { right: 10px; }
+
+        /* --- Projects Grid --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .card:hover, .card:focus-visible {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            border-color: rgba(229, 57, 53, 0.4);
+        }
+
+        .card-img-overflow-wrapper {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            background: transparent;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            background-color: transparent;
+            display: block;
+            transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .card:hover .card-img {
+            transform: scale(1.08);
+        }
+
+        /* Sleek Camera Badge Overlay */
+        .photo-badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: rgba(13, 13, 13, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            z-index: 5;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .card:hover .photo-badge {
+            background: rgba(229, 57, 53, 0.85);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .card-content {
+            padding: 2rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+            transition: color 0.3s ease;
+        }
+
+        .card:hover .card-content h3 {
+            color: var(--accent-color);
+        }
+
+        .card-content p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .card-click-hint {
+            margin-top: auto;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-click-hint {
+            transform: translateX(5px);
+        }
+
+        /* --- Individual Project Detail Page --- */
+        #project-detail-view {
+            padding: 8rem 5% 6rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-main);
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 2.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            transform: translateX(-4px);
+        }
+
+        .detail-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+        }
+
+        .detail-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .detail-img-container {
+            width: 100%;
+            max-height: 550px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: var(--card-bg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .detail-img {
+            width: 100%;
+            height: 100%;
+            max-height: 550px;
+            object-fit: contain;
+            display: block;
+            background-color: #121212;
+        }
+
+        .detail-description {
+            background-color: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .detail-description p {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-description p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 900px) {
+            .about-hero-container {
+                flex-direction: column;
+                text-align: center;
+                margin-top: 2rem;
+            }
+            .profile-img-wrapper {
+                flex: 0 0 auto;
+                margin: 0 auto 2rem auto;
+            }
+            .hero-subtitle {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            h1 { font-size: 3.5rem; }
+            .section-title::after {
+                left: 25%;
+            }
+            .detail-title { font-size: 2.2rem; }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.8rem; }
+            nav ul { display: none; }
+            .grid { grid-template-columns: 1fr; }
+            .gallery-card {
+                flex: 0 0 75%;
+                height: 320px;
+            }
+            .gallery-prev { left: 5px; }
+            .gallery-next { right: 5px; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Interactive Canvas Background -->
+    <canvas id="interactive-bg"></canvas>
+
+    <nav id="navbar">
+        <a href="#" class="logo" onclick="showMainPortfolio(true); return false;">SHAYLAN BHAKTA</a>
+        <ul>
+            <li><a href="#about" class="nav-link">About</a></li>
+            <li><a href="#gallery" class="nav-link">Gallery</a></li>
+            <li><a href="#projects" class="nav-link">Projects</a></li>
+            <li>
+                <a href="https://www.linkedin.com/in/shaylan-bhakta-4b64b1260/" target="_blank" rel="noopener noreferrer" class="nav-icon" title="LinkedIn Profile">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Portfolio View -->
+    <div id="main-portfolio-view" class="page-view">
+        <header id="about">
+            <div class="about-hero-container">
+                <div class="profile-img-wrapper">
+                    <img src="popcam_headshot_light-grey.jpg" alt="Shaylan Bhakta Profile Photo" class="profile-img">
+                </div>
+                
+                <div class="about-hero-content">
+                    <h1 class="animate-item delay-1">About <span>Me.</span></h1>
+                    <p class="hero-subtitle animate-item delay-2">
+                        I am a Mechanical Engineering student at The University of Texas at Dallas with a strong focus on robotics, aerospace, and medical device hardware. My engineering journey began in high school through FIRST Tech Challenge Robotics, where I first discovered a passion for research and design.
+                    </p>
+                    <p class="hero-subtitle animate-item delay-3">
+                        At UTD, I have applied that R&D mindset across multiple projects, from designing exhaust components on our Formula SAE team to designing and building an L1 high power rocket. These hands on experiences have refined my engineering skills, enabling me to work on industry level projects.
+                    </p>
+                    <p class="hero-subtitle animate-item delay-3">
+                        In my free time, I enjoy fishing and playing pickleball with friends. As an Eagle Scout from Troop 219, I stay active outdoors through camping and hiking, and love exploring new travel destinations.
+                    </p>
+                    <div class="animate-item delay-4">
+                        <a href="https://www.linkedin.com/in/shaylan-bhakta-4b64b1260/" class="linkedin-btn" target="_blank" rel="noopener noreferrer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                            </svg>
+                            Connect on LinkedIn
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Centered & Expanded Gallery Section -->
+        <section id="gallery">
+            <h2 class="section-title animate-item">Gallery</h2>
+            <div class="gallery-carousel-container animate-item delay-1">
+                <button class="gallery-nav-btn gallery-prev" onclick="moveGallerySlide(-1)">&#10094;</button>
+                <button class="gallery-nav-btn gallery-next" onclick="moveGallerySlide(1)">&#10095;</button>
+                <div class="gallery-track-wrapper">
+                    <div class="gallery-track" id="main-gallery-track">
+                        <div class="gallery-card" data-project="ftc-arm" onclick="openProject('ftc-arm')">
+                            <img src="LM3%20Robot%20irl.jpg" alt="FTC Robot Real Life Build" class="gallery-img">
+                        </div>
+                        <div class="gallery-card" data-project="ftc-arm" onclick="openProject('ftc-arm')">
+                            <img src="LM3%20Arm%20irl.png" alt="FTC Robot Arm Real Life Mechanism" class="gallery-img">
+                        </div>
+                        <div class="gallery-card" data-project="custom-chassis" onclick="openProject('custom-chassis')">
+                            <img src="Custom%20Chassis%20irl.jpg" alt="Custom Chassis Real Life Build" class="gallery-img">
+                        </div>
+                        <div class="gallery-card" data-project="lost-and-found-cart" onclick="openProject('lost-and-found-cart')">
+                            <img src="Lost%20and%20Found%20irl.jpg" alt="Eagle Scout Lost and Found Cart" class="gallery-img">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects">
+            <h2 class="section-title animate-item">Projects</h2>
+            <div class="grid">
+                
+                <div class="card animate-item delay-1" id="card-exhaust-header" tabindex="0" onclick="openProject('exhaust-header')" onkeydown="if(event.key==='Enter'||event.key===' ') openProject('exhaust-header');">
+                    <div class="card-img-overflow-wrapper">
+                        <img src="32b1f2b1-cbf1-4072-a472-d03e339d9938.png" alt="CAD Render of Exhaust Header Manifold" class="card-img">
+                    </div>
+                    <div class="card-content">
+                        <h3>Exhaust Header</h3>
+                        <p>I am currently working on creating a full exhaust system for an FSAE internal combustion car. I modeled a multi runner exhaust manifold utilizing SolidWorks to test packaging geometry and practice complex part design.</p>
+                        <p>Future iterations will optimize runner lengths and merge collector geometry to account for engine scavenging and valve overlap timings. I am currently trying to get access to a GT-Suite License for a 1d Engine Simulation to help calculate valve overlap timings using the mass flow from our engine.</p>
+                        <span class="card-click-hint">View Project &rarr;</span>
+                    </div>
+                </div>
+
+                <div class="card animate-item delay-2" id="card-ftc-arm" tabindex="0" onclick="openProject('ftc-arm')" onkeydown="if(event.key==='Enter'||event.key===' ') openProject('ftc-arm');">
+                    <div class="card-img-overflow-wrapper">
+                        <span class="photo-badge">📷 +3 Photos</span>
+                        <img src="LM3 Arm.png" alt="FTC Robot Arm Assembly" class="card-img">
+                    </div>
+                    <div class="card-content">
+                        <h3>FTC Robot Arm</h3>
+                        <p>I designed an arm mounted on our robot's vertical extension slides, positioning it to smoothly transfer game pieces directly from our intake to the outtake claw.</p>
+                        <p>The arm features a belt-driven wrist which adds an extra degree of freedom, while the geared claw allows both sides to open and close with the use of a single servo.</p>
+                        <p>The mount for the arm utilizes a 2:3 gear reduction for increased torque and uses parallel plates to take excess force off of the servo.</p>
+                        <span class="card-click-hint">View Project &rarr;</span>
+                    </div>
+                </div>
+
+                <div class="card animate-item delay-3" id="card-custom-chassis" tabindex="0" onclick="openProject('custom-chassis')" onkeydown="if(event.key==='Enter'||event.key===' ') openProject('custom-chassis');">
+                    <div class="card-img-overflow-wrapper">
+                        <span class="photo-badge">📷 +2 Photos</span>
+                        <img src="CustomChassisOutside.png" alt="FTC Custom Chassis Outside" class="card-img">
+                    </div>
+                    <div class="card-content">
+                        <h3>FTC Custom Chassis</h3>
+                        <p>I designed a custom, belt-driven chassis with wheels fully enclosed inside the frame to prevent the robot from snagging on loose game pieces.</p>
+                        <p>Centralizing the motors lowered and balanced the center of gravity, enhancing overall stability when both horizontal and vertical slides are fully extended.</p>
+                        <p>Furthermore, this custom frame allows for precise subsystem placement, greatly reducing the error in our transfer system.</p>
+                        <span class="card-click-hint">View Project &rarr;</span>
+                    </div>
+                </div>
+
+                <div class="card animate-item delay-4" id="card-lost-and-found-cart" tabindex="0" onclick="openProject('lost-and-found-cart')" onkeydown="if(event.key==='Enter'||event.key===' ') openProject('lost-and-found-cart');">
+                    <div class="card-img-overflow-wrapper">
+                        <span class="photo-badge">📷 +1 Photo</span>
+                        <img src="Lost%20and%20Found%20CAD_2.png" alt="Eagle Scout Lost and Found Cart CAD Model" class="card-img">
+                    </div>
+                    <div class="card-content">
+                        <h3>Eagle Scout Lost and Found Cart</h3>
+                        <p>I built a custom wooden Lost and Found cart for Renner Middle School. I started out by mapping the whole thing in CAD to get the dimensions, plywood cutout patterns, and screw locations.</p>
+                        <p>In order to make the cart stronger, I used dado and rabbet joints for all the main connections. Making grooves and channels meant I had to learn how to use a table saw and router. The cart is still in active use at the school, allowing staff to roll it outside during dismissal so parents can easily check for missing items.</p>
+                        <span class="card-click-hint">View Project &rarr;</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+
+    <!-- Dynamic Individual Project Detail View -->
+    <div id="project-detail-view" class="page-view hidden-view">
+        <button class="back-btn" onclick="showMainPortfolio(false)">&larr; Back to Projects</button>
+        <h1 class="detail-title" id="detail-title">Project Title</h1>
+        
+        <div class="detail-gallery" id="detail-gallery">
+            <!-- Dynamic project images rendered here -->
+        </div>
+
+        <div class="detail-description" id="detail-description">
+            <!-- Dynamic project description paragraphs rendered here -->
+        </div>
+    </div>
+
+    <script>
+        // --- Project Database ---
+        const projectsData = {
+            'exhaust-header': {
+                title: 'Exhaust Header',
+                images: [
+                    { src: '32b1f2b1-cbf1-4072-a472-d03e339d9938.png', alt: 'CAD Render of Exhaust Header Manifold' }
+                ],
+                paragraphs: [
+                    'I am currently working on creating a full exhaust system for an FSAE internal combustion car. I modeled a multi runner exhaust manifold utilizing SolidWorks to test packaging geometry and practice complex part design.',
+                    'Future iterations will optimize runner lengths and merge collector geometry to account for engine scavenging and valve overlap timings. I am currently trying to get access to a GT-Suite License for a 1d Engine Simulation to help calculate valve overlap timings using the mass flow from our engine.'
+                ]
+            },
+            'ftc-arm': {
+                title: 'FTC Robot Arm',
+                images: [
+                    { src: 'LM3 Arm.png', alt: 'FTC Robot Arm Assembly' },
+                    { src: 'LM3 Arm Mount.png', alt: 'FTC Robot Arm Mount & Gearing' },
+                    { src: 'LM3%20Robot%20irl.jpg', alt: 'FTC Robot Arm Real Life Implementation' },
+                    { src: 'LM3%20Arm%20irl.png', alt: 'FTC Robot Arm Real Life Mechanism' }
+                ],
+                paragraphs: [
+                    'I designed an arm mounted on our robot\'s vertical extension slides, positioning it to smoothly transfer game pieces directly from our intake to the outtake claw.',
+                    'The arm features a belt-driven wrist which adds an extra degree of freedom, while the geared claw allows both sides to open and close with the use of a single servo.',
+                    'The mount for the arm utilizes a 2:3 gear reduction for increased torque and uses parallel plates to take excess force off of the servo.'
+                ]
+            },
+            'custom-chassis': {
+                title: 'FTC Custom Chassis',
+                images: [
+                    { src: 'CustomChassisOutside.png', alt: 'FTC Custom Chassis Outside View' },
+                    { src: 'CustomChassisInside.png', alt: 'FTC Custom Chassis Inside View' },
+                    { src: 'Custom%20Chassis%20irl.jpg', alt: 'FTC Custom Chassis Real Life Implementation' }
+                ],
+                paragraphs: [
+                    'I designed a custom, belt-driven chassis with wheels fully enclosed inside the frame to prevent the robot from snagging on loose game pieces.',
+                    'Centralizing the motors lowered and balanced the center of gravity, enhancing overall stability when both horizontal and vertical slides are fully extended.',
+                    'Furthermore, this custom frame allows for precise subsystem placement, greatly reducing the error in our transfer system.'
+                ]
+            },
+            'lost-and-found-cart': {
+                title: 'Eagle Scout Lost and Found Cart',
+                images: [
+                    { src: 'Lost%20and%20Found%20CAD_2.png', alt: 'Eagle Scout Lost and Found Cart CAD Model' },
+                    { src: 'Lost%20and%20Found%20irl.jpg', alt: 'Eagle Scout Lost and Found Cart Real Life Implementation' }
+                ],
+                paragraphs: [
+                    'I built a custom wooden Lost and Found cart for Renner Middle School. I started out by mapping the whole thing in CAD to get the dimensions, plywood cutout patterns, and screw locations.',
+                    'In order to make the cart stronger, I used dado and rabbet joints for all the main connections. Making grooves and channels meant I had to learn how to use a table saw and router. The cart is still in active use at the school, allowing staff to roll it outside during dismissal so parents can easily check for missing items.'
+                ]
+            }
+        };
+
+        // --- View & Navigation Controller ---
+        const mainView = document.getElementById('main-portfolio-view');
+        const detailView = document.getElementById('project-detail-view');
+        let currentProjectId = null;
+
+        function openProject(projectId) {
+            const data = projectsData[projectId];
+            if (!data) return;
+            currentProjectId = projectId;
+
+            document.getElementById('detail-title').innerText = data.title;
+
+            // Render gallery images
+            const galleryContainer = document.getElementById('detail-gallery');
+            galleryContainer.innerHTML = '';
+            data.images.forEach(imgData => {
+                const imgBox = document.createElement('div');
+                imgBox.className = 'detail-img-container';
+                const imgEl = document.createElement('img');
+                imgEl.src = imgData.src;
+                imgEl.alt = imgData.alt;
+                imgEl.className = 'detail-img';
+                imgBox.appendChild(imgEl);
+                galleryContainer.appendChild(imgBox);
+            });
+
+            // Render description paragraphs
+            const descContainer = document.getElementById('detail-description');
+            descContainer.innerHTML = '';
+            data.paragraphs.forEach(text => {
+                const p = document.createElement('p');
+                p.innerText = text;
+                descContainer.appendChild(p);
+            });
+
+            // Animated Out -> In transition
+            mainView.style.opacity = '0';
+            mainView.style.transform = 'scale(0.97) translateY(-15px)';
+
+            setTimeout(() => {
+                mainView.classList.add('hidden-view');
+                detailView.classList.remove('hidden-view');
+                detailView.classList.add('animate-view-in');
+                window.scrollTo({ top: 0, behavior: 'instant' });
+            }, 300);
+        }
+
+        function showMainPortfolio(goToTop = false) {
+            detailView.style.opacity = '0';
+            detailView.style.transform = 'scale(0.97) translateY(15px)';
+
+            setTimeout(() => {
+                detailView.classList.add('hidden-view');
+                detailView.classList.remove('animate-view-in');
+                detailView.style.opacity = '1';
+                detailView.style.transform = 'none';
+
+                mainView.classList.remove('hidden-view');
+                mainView.classList.add('animate-view-in');
+                mainView.style.opacity = '1';
+                mainView.style.transform = 'none';
+
+                if (goToTop) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else if (currentProjectId) {
+                    const targetCard = document.getElementById(`card-${currentProjectId}`);
+                    if (targetCard) {
+                        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else {
+                        document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+                    }
+                } else {
+                    document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 300);
+        }
+
+        // --- Infinite Centered Gallery Carousel Logic ---
+        let galleryCurrentIndex = 2; // Start at first real card (Index 2 after clones)
+        let realCardCount = 0;
+        let isGalleryAnimating = false;
+
+        function initGalleryCarousel() {
+            const track = document.getElementById('main-gallery-track');
+            if (!track || track.dataset.initialized) return;
+
+            const originalCards = Array.from(track.children);
+            realCardCount = originalCards.length;
+            if (realCardCount === 0) return;
+
+            // Clone items to the start and end for seamless 360 loop
+            const cloneBefore1 = originalCards[realCardCount - 1].cloneNode(true);
+            const cloneBefore2 = originalCards[realCardCount - 2].cloneNode(true);
+            const cloneAfter1 = originalCards[0].cloneNode(true);
+            const cloneAfter2 = originalCards[1].cloneNode(true);
+
+            track.insertBefore(cloneBefore1, originalCards[0]);
+            track.insertBefore(cloneBefore2, cloneBefore1);
+            track.appendChild(cloneAfter1);
+            track.appendChild(cloneAfter2);
+
+            track.dataset.initialized = "true";
+            galleryCurrentIndex = 2; // Real item 0
+
+            track.addEventListener('transitionend', handleGalleryTransitionEnd);
+            updateGalleryCarousel(false);
+        }
+
+        function updateGalleryCarousel(animate = true) {
+            const track = document.getElementById('main-gallery-track');
+            const wrapper = document.querySelector('.gallery-track-wrapper');
+            if (!track || !wrapper) return;
+
+            const cards = track.querySelectorAll('.gallery-card');
+            if (cards.length === 0) return;
+
+            if (!animate) {
+                track.style.transition = 'none';
+            } else {
+                track.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+            }
+
+            cards.forEach((card, i) => {
+                card.classList.toggle('active', i === galleryCurrentIndex);
+            });
+
+            const cardWidth = cards[0].offsetWidth;
+            const wrapperWidth = wrapper.offsetWidth;
+            const gap = parseFloat(window.getComputedStyle(track).gap) || 24;
+
+            // Calculates exact pixel offset to center the active card perfectly
+            const moveAmount = (wrapperWidth / 2) - ((cardWidth + gap) * galleryCurrentIndex + cardWidth / 2);
+            track.style.transform = `translateX(${moveAmount}px)`;
+        }
+
+        function moveGallerySlide(direction) {
+            if (isGalleryAnimating) return;
+            isGalleryAnimating = true;
+
+            galleryCurrentIndex += direction;
+            updateGalleryCarousel(true);
+        }
+
+        function handleGalleryTransitionEnd() {
+            isGalleryAnimating = false;
+            const track = document.getElementById('main-gallery-track');
+            if (!track) return;
+
+            // Instantly snap across loop boundaries with zero animation
+            if (galleryCurrentIndex >= realCardCount + 2) {
+                galleryCurrentIndex = galleryCurrentIndex - realCardCount;
+                updateGalleryCarousel(false);
+            } else if (galleryCurrentIndex < 2) {
+                galleryCurrentIndex = galleryCurrentIndex + realCardCount;
+                updateGalleryCarousel(false);
+            }
+        }
+
+        window.addEventListener('load', initGalleryCarousel);
+        window.addEventListener('resize', () => updateGalleryCarousel(false));
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                
+                if (detailView.classList.contains('hidden-view')) {
+                    if (targetId === '#') {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else {
+                        document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+                    }
+                } else {
+                    showMainPortfolio(targetId === '#');
+                }
+            });
+        });
+
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-item').forEach(item => {
+            observer.observe(item);
+        });
+
+        // --- Interactive Particle & Scroll Canvas Background ---
+        const canvas = document.getElementById('interactive-bg');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let particles = [];
+        let scrollY = window.scrollY;
+        let targetScrollY = window.scrollY;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        window.addEventListener('scroll', () => {
+            targetScrollY = window.scrollY;
+        });
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2 + 0.8;
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.density = (Math.random() * 20) + 5;
+                this.vx = (Math.random() - 0.5) * 0.4;
+                this.vy = (Math.random() - 0.5) * 0.4;
+                this.color = Math.random() > 0.3 ? 'rgba(255, 255, 255, ' + (Math.random() * 0.25 + 0.05) + ')' : 'rgba(229, 57, 53, ' + (Math.random() * 0.3 + 0.1) + ')';
+            }
+            update(scrollDelta) {
+                this.x += this.vx;
+                this.y += this.vy - (scrollDelta * 0.08);
+
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const count = Math.floor((width * height) / 14000);
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle());
+            }
+        }
+        initParticles();
+
+        let lastScrollTop = window.scrollY;
+        function animate() {
+            scrollY += (targetScrollY - scrollY) * 0.1;
+            const scrollDelta = targetScrollY - lastScrollTop;
+            lastScrollTop = targetScrollY;
+
+            ctx.clearRect(0, 0, width, height);
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update(scrollDelta);
+                particles[i].draw();
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 100) {
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.04 * (1 - dist / 100)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
